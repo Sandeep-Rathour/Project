@@ -1,3 +1,6 @@
+#This File is not Necessary, I created this to Run Code more Easily
+#You can also Run your Program by Command line
+#Make Sure you Link and Compile you Code Correctly
 all: link compile run
 
 link: 
