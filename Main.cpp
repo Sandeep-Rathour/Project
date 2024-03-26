@@ -1,5 +1,5 @@
-#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 void Gravity(sf::RectangleShape & body, float & weight);
 
