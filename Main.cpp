@@ -1,28 +1,38 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Number.hpp"
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(600, 400), "Testing Number System", sf::Style::Close);
 
-    sf::RectangleShape box(sf::Vector2f(100, 100));
-    box.setPosition(0,0);
-    box.setFillColor(sf::Color::Red);
+    sf::Sprite Digits;
+    Score num;
 
-    std::cout<<"hello"<<std::endl;
+    sf::Clock clock;
+    sf::Time deltaTime;
 
     while(window.isOpen())
     {
-        sf::Event Evnt;
-        if(window.pollEvent(Evnt) == sf::Event::Closed)
+        
+        deltaTime = clock.getElapsedTime();
+        sf::Event evnt;
+        while(window.pollEvent(evnt))
         {
-            window.close();
+            if(evnt.type == sf::Event::Closed)
+            {
+                window.close();
+            }
         }
 
-        window.clear();
-        window.draw(box);
+        num.update(deltaTime);
+        Digits.setTexture(num.currentScore);
+        
+        std::cout << "Time:- "<< int (deltaTime.asSeconds()) << std::endl;
+        
+        window.clear(sf::Color::White);
+        window.draw(Digits);
         window.display();
     }
-
     return 0;
 }
