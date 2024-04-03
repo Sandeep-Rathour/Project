@@ -15,7 +15,7 @@ int main()
     Score num;
     
     std::random_device seed;
-    std::uniform_int_distribution <int> randomNumber(-310, -40);
+    std::uniform_int_distribution <int> randomNumber( -280, -60);
 
     sf::Texture bothPipes;
     bothPipes.loadFromFile("Sprites/GreenPipe.png");
