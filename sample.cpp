@@ -1,17 +1,75 @@
+#include <SFML/Graphics.hpp>
 #include <iostream>
-#include <random>
 
-int main(void)
+enum class GameState
 {
-    std::random_device rd;
-    std::uniform_int_distribution <int> sandeep(-300, -10);
+    Loading,
+    Menu,
+    Game,
+    Pause
+};
 
-    // std::srand(12);
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Flappy Bird");
 
-    for( int i = 0; i < 8; i++)
-        std::cout << sandeep(rd) << std::endl;
-    
-        // std::cout << std::rand() % 6 + 1 << std::endl;
+    GameState gameState = GameState::Loading;
 
-    return false;
+    // Game loop
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Space && gameState == GameState::Menu)
+                {
+                    // Start the game
+                    gameState = GameState::Game;
+                }
+                else if (event.key.code == sf::Keyboard::Escape && gameState == GameState::Game)
+                {
+                    // Pause the game
+                    gameState = GameState::Pause;
+                }
+            }
+        }
+
+        window.clear();
+
+        switch (gameState)
+        {
+            case GameState::Loading:
+                // Display loading screen
+                // Load game assets
+                // Transition to Menu state when loading is complete
+                gameState = GameState::Menu;
+                break;
+
+            case GameState::Menu:
+                // Display menu with play button
+                // Clicking play button will start the game
+                window.draw(/* Menu elements */);
+                break;
+
+            case GameState::Game:
+                // Game logic and rendering
+                window.draw(/* Game elements */);
+                break;
+
+            case GameState::Pause:
+                // Display pause menu
+                // Resume game or go back to menu
+                window.draw(/* Pause menu elements */);
+                break;
+        }
+
+        window.display();
+    }
+
+    return 0;
 }

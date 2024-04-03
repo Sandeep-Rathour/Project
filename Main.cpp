@@ -1,14 +1,24 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <random>
-#include "Number.hpp"
-#include "AnimateMove.hpp"
-#include "Bird.hpp"
-#include "Pipes.hpp"
+#include <random> //Random Number Generation 
+#include "Number.hpp" //Representing Scores
+#include "AnimateMove.hpp" //Moving Images Backward Repeatedly. Mainly Ground and BackGround;
+#include "Bird.hpp" //For our Flappy
+#include "Pipes.hpp" //Pipes Rendered and Moved
 
+enum class GameState
+{
+    Menu,
+    Game,
+};
+
+//Main Function
 int main()
 {
+    
     sf::RenderWindow window(sf::VideoMode(288, 512), "Testing Number System", sf::Style::Close);
+
+    
 
     bool runGame = true;
     sf::Sprite Digits;
@@ -65,6 +75,7 @@ int main()
             }
         }
 
+        
         
         if(flappy.isCollide == true)
         {
