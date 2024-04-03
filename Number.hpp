@@ -4,7 +4,7 @@ class Score
 {
 public:
     Score(void);
-    void update(sf::Time time);
+    void update(float time);
 
 public:
     sf::Texture currentScore;
@@ -15,7 +15,8 @@ private:
     sf::Sprite num1, num2;
     int score;
     int lastDigit;
-    float scale = 1.3;
+    float scale = 1.0;
+    sf::RenderTexture renderTexture;
 };
 
 Score::Score(void)
@@ -37,15 +38,14 @@ Score::Score(void)
     num2.setPosition(0, 0);
 }
 
-void Score::update(sf::Time time)
+void Score::update(float time)
 {
 
-    score = int(time.asMilliseconds());
-
-    sf::RenderTexture renderTexture;
+    // score = int(time.asMilliseconds());
+    score = time;
 
     renderTexture.create(52 * scale, 38 * scale);
-    renderTexture.clear(sf::Color::White);
+    renderTexture.clear(sf::Color::Transparent);
 
     lastDigit = score % 10;
     uvRect.left = uvRect.width * lastDigit;

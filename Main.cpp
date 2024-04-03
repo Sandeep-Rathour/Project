@@ -1,21 +1,61 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <random>
 #include "Number.hpp"
+#include "AnimateMove.hpp"
+#include "Bird.hpp"
+#include "Pipes.hpp"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(600, 400), "Testing Number System", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(288, 512), "Testing Number System", sf::Style::Close);
 
+    bool runGame = true;
     sf::Sprite Digits;
     Score num;
+    
+    std::random_device seed;
+    std::uniform_int_distribution <int> randomNumber(-310, -40);
+
+    sf::Texture bothPipes;
+    bothPipes.loadFromFile("Sprites/GreenPipe.png");
+
+    sf::Texture flappyTexture;
+    flappyTexture.loadFromFile("Sprites/BlueBird.png");
+
+    sf::Texture daySky;
+    daySky.loadFromFile("Sprites/NightSky.png");
+    // Background.setTexture(daySky);
+
+    sf::Texture bottom;
+    bottom.loadFromFile("Sprites/Ground.png");
+
+    int PipeGroundSpeed = -120;
+
+    Pipes green(bothPipes, PipeGroundSpeed);
+    Bird flappy(flappyTexture, 27, runGame);
+    AnimateMove ground(bottom, 400, PipeGroundSpeed, runGame);
+    AnimateMove backGround(daySky, 0, -60, 1);
 
     sf::Clock clock;
-    sf::Time deltaTime;
+    float deltaTime;
+
+    sf::Clock tt;
 
     while(window.isOpen())
     {
+        float ft = tt.getElapsedTime().asSeconds();
         
-        deltaTime = clock.getElapsedTime();
+        // sf::Time dt = clock.restart();
+        // deltaTime = dt.asSeconds();
+        deltaTime = clock.restart().asSeconds();
+
+
+        if(deltaTime > 1.0f / 20.0f)
+        {
+            deltaTime = 1.0f / 20.0f;
+        }
+
         sf::Event evnt;
         while(window.pollEvent(evnt))
         {
@@ -25,14 +65,36 @@ int main()
             }
         }
 
-        num.update(deltaTime);
+        
+        if(flappy.isCollide == true)
+        {
+            runGame = false;
+        }
+        num.update(ft);
         Digits.setTexture(num.currentScore);
         
-        std::cout << "Time:- "<< int (deltaTime.asSeconds()) << std::endl;
+        // std::cout << "Time: "<< double (deltaTime) << std::endl;
+
+        flappy.update(deltaTime);
+        green.update(deltaTime, randomNumber(seed));
+        backGround.update(deltaTime);
+        ground.update(deltaTime);
         
-        window.clear(sf::Color::White);
-        window.draw(Digits);
+    // std::cout<< randomNumber(seed) << std::endl;
+
+        window.clear(sf::Color::White);        
+
+        backGround.Draw(window);
+
+        green.Draw(window);
+        ground.Draw(window);
+
+        window.draw(flappy.bird);
+        // window.draw(Digits);
+
         window.display();
+
     }
+
     return 0;
 }
