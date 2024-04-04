@@ -3,8 +3,8 @@
 class AnimateMove
 {
 public:
-    AnimateMove(sf::Texture &text, float height, float speed, bool state);
-    void update(float deltaTime);
+    AnimateMove(sf::Texture &text, float height, float speed);
+    void update(float deltaTime, bool state);
     void Draw(sf::RenderWindow &window);
     bool state;
 
@@ -21,7 +21,7 @@ private:
     void Move();
 };
 
-AnimateMove::AnimateMove(sf::Texture &text, float height, float speed, bool state)
+AnimateMove::AnimateMove(sf::Texture &text, float height, float speed)
 {
     this->state = state;
     this->height = height;
@@ -47,7 +47,7 @@ void AnimateMove::Move()
     second.move((movement.x * time), 0);
 }
 
-void AnimateMove::update(float deltaTime)
+void AnimateMove::update(float deltaTime , bool state)
 { 
     time = deltaTime;
     firstX = first.getPosition().x;

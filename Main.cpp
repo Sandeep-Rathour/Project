@@ -6,81 +6,117 @@
 #include "Bird.hpp" //For our Flappy
 #include "Pipes.hpp" //Pipes Rendered and Moved
 
+///Using enum class named GameState
+///To change States of game based on Gameplay 
+///
 enum class GameState
 {
     Menu,
     Game,
+    Pause,
 };
 
-//Main Function
+///Main Function
 int main()
 {
-    
+
+///Built in SFML library, RenderWindow to create a new Window
+///
     sf::RenderWindow window(sf::VideoMode(288, 512), "Testing Number System", sf::Style::Close);
 
+
     
 
-    bool runGame = true;
+    bool isPaused = true;
     sf::Sprite Digits;
     Score num;
     
+///using Random Fuction for Pipes 
+///
     std::random_device seed;
     std::uniform_int_distribution <int> randomNumber( -280, -60);
 
-    sf::Texture bothPipes;
-    bothPipes.loadFromFile("Sprites/GreenPipe.png");
 
-    sf::Texture flappyTexture;
+///All Textures are Created Here
+///
+    sf::Texture greenPipe; //texture of a Single Pipe 
+    greenPipe.loadFromFile("Sprites/GreenPipe.png");
+
+    sf::Texture flappyTexture; //texture of Sprite-Sheet of Bird
     flappyTexture.loadFromFile("Sprites/BlueBird.png");
 
-    sf::Texture daySky;
+    sf::Texture daySky; //Texture of Day Sky Background
     daySky.loadFromFile("Sprites/NightSky.png");
-    // Background.setTexture(daySky);
 
-    sf::Texture bottom;
+    sf::Texture bottom; //Texture of Ground
     bottom.loadFromFile("Sprites/Ground.png");
 
     int PipeGroundSpeed = -120;
 
-    Pipes green(bothPipes, PipeGroundSpeed);
-    Bird flappy(flappyTexture, 27, runGame);
-    AnimateMove ground(bottom, 400, PipeGroundSpeed, runGame);
-    AnimateMove backGround(daySky, 0, -60, 1);
+///Most Constructor's are called here
+///
+    AnimateMove ground(bottom, 400, PipeGroundSpeed); //Ground
+    AnimateMove backGround(daySky, 0, -60); //Background
+    
+    Pipes green(greenPipe, PipeGroundSpeed); //Pipes (both upper and lower)      
+    Bird flappy(flappyTexture, 27, isPaused); //Flappy Bird
 
-    sf::Clock clock;
-    float deltaTime;
+///Using SFML Clock so that Objects will move acording to time, 
+///which will result in moving objects at same speed in all Computers
+///
+    sf::Clock clock; 
+    float deltaTime; //Storing clock time as Seconds in deltaTime
 
     sf::Clock tt;
 
     while(window.isOpen())
     {
         float ft = tt.getElapsedTime().asSeconds();
-        
-        // sf::Time dt = clock.restart();
-        // deltaTime = dt.asSeconds();
-        deltaTime = clock.restart().asSeconds();
+        ///Time from last reset is Stored and then Clock is restarted
+        deltaTime = clock.restart().asSeconds(); 
 
-
+        ///if out Time goes more than we need, we set it manually
         if(deltaTime > 1.0f / 20.0f)
         {
             deltaTime = 1.0f / 20.0f;
         }
 
+        GameState gameState = GameState::Menu;
+
+        ///Using evnt to Close window and Minimize it
         sf::Event evnt;
         while(window.pollEvent(evnt))
         {
             if(evnt.type == sf::Event::Closed)
             {
-                window.close();
+                window.close(); //Closing Fuction
+            }
+
+            if(evnt.type == sf::Event::KeyPressed)
+            {
+                if (evnt.key.code == sf::Keyboard::Space && gameState == GameState::Menu)
+                {
+                    gameState = GameState::Game;
+                }
+                else if(evnt.key.code == sf::Keyboard::Escape && gameState == GameState::Game)
+                {
+                    gameState = GameState::Pause;
+                }
+                else if(evnt.key.code == sf::Keyboard::Space && gameState == GameState::Pause)
+                {
+                    gameState = GameState::Game;
+                }
             }
         }
 
-        
+
         
         if(flappy.isCollide == true)
         {
-            runGame = false;
+            isPaused = false;
         }
+
+
         num.update(ft);
         Digits.setTexture(num.currentScore);
         
@@ -88,23 +124,31 @@ int main()
 
         flappy.update(deltaTime);
         green.update(deltaTime, randomNumber(seed));
-        backGround.update(deltaTime);
-        ground.update(deltaTime);
+        backGround.update(deltaTime, isPaused);
+        ground.update(deltaTime, isPaused);
         
     // std::cout<< randomNumber(seed) << std::endl;
 
-        window.clear(sf::Color::White);        
+///Clear Function Clear's the RenderWindow
+///if not Cleared it will not Work Prperly
+///
+        window.clear(sf::Color::White);
+
+        switch (gameState)
+        {
+
+        }
 
         backGround.Draw(window);
-
         green.Draw(window);
         ground.Draw(window);
-
         window.draw(flappy.bird);
+
         // window.draw(Digits);
 
+///Display Fuction is Used to Display Everything on RenderWindow
+///
         window.display();
-
     }
 
     return 0;
