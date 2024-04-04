@@ -5,8 +5,8 @@ class Bird
 {
 
 public:
-    Bird(sf::Texture &texture, float jumpHeight, bool canJump);
-    void update(float deltaTime);
+    Bird(sf::Texture &texture, float jumpHeight);
+    void update(float deltaTime, bool isGame);
 
 public:
     sf::Sprite bird;
@@ -14,12 +14,12 @@ public:
 
 private:
     sf::Vector2f velocity;
-    bool canJump;
+    bool canJump = true;
     float jumpHeight;
     float gravity;
 };
 
-Bird::Bird(sf::Texture &texture, float jumpHeight, bool canJump)
+Bird::Bird(sf::Texture &texture, float jumpHeight)
 {
     gravity = 981.0f;
     velocity.y = 0;
@@ -32,23 +32,23 @@ Bird::Bird(sf::Texture &texture, float jumpHeight, bool canJump)
     bird.setTextureRect(sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y / 4));
 }
 
-void Bird::update(float deltaTime)
+void Bird::update(float deltaTime , bool isGame)
 {
     if(velocity.y >= -30 && velocity.y <= 30)
     {
         velocity.y = 40;
     }
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && canJump)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isGame)
     {
         velocity.y = -sqrt(2.0f * gravity * jumpHeight );
     }
-    else if(canJump)
+    else if(isGame && canJump)
     {
         velocity.y = velocity.y + gravity * deltaTime;
     }
 
-    if(canJump)
+    if(isGame && canJump)
     {
         bird.move(velocity.x, velocity.y * deltaTime);
     }

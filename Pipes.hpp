@@ -7,7 +7,7 @@ class Pipes
 
 public:
     Pipes(sf::Texture &texture, float speed);
-    void update(float deltaTime, int randomPosition);
+    void update(float deltaTime, int randomPosition, bool isGame);
     void Draw(sf::RenderWindow &window);
 
 public:
@@ -24,7 +24,6 @@ private:
     float pipeDistance = 180;
     float pipeDifference = 320 + 110;
     sf::Vector2f movement;
-    bool isMoving = true;
 };
 
 Pipes::Pipes(sf::Texture &texture, float speed)
@@ -56,19 +55,10 @@ Pipes::Pipes(sf::Texture &texture, float speed)
     // height of pipe is 320 and width is 52
 }
 
-void Pipes::update(float deltaTime, int rd)
+void Pipes::update(float deltaTime, int rd, bool isGame)
 {
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-        {
-            isMoving = false;
-        }
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-        {
-            isMoving = true;
-        }
-
-    if (isMoving)
+    if (isGame)
     {
         if (upperPipe.getPosition().x < -52)
         {

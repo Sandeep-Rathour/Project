@@ -4,7 +4,7 @@ class AnimateMove
 {
 public:
     AnimateMove(sf::Texture &text, float height, float speed);
-    void update(float deltaTime, bool state);
+    void update(float deltaTime, bool isGame);
     void Draw(sf::RenderWindow &window);
     bool state;
 
@@ -47,13 +47,13 @@ void AnimateMove::Move()
     second.move((movement.x * time), 0);
 }
 
-void AnimateMove::update(float deltaTime , bool state)
+void AnimateMove::update(float deltaTime , bool isGame)
 { 
     time = deltaTime;
     firstX = first.getPosition().x;
     secondX = second.getPosition().x;
     
-    if (state)
+    if (isGame)
     {
         if (firstX + size.x < 0)
         {
