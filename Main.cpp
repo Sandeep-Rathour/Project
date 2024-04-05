@@ -166,10 +166,12 @@ int main()
         case GameState::Pause:
             isGame = false;
 
-            flappy.update(deltaTime, isGame);
-            green.update(deltaTime, randomNumber(seed), isGame);
-            backGround.update(deltaTime, isGame);
-            ground.update(deltaTime, isGame);
+            
+
+            // flappy.update(deltaTime, isGame);
+            // green.update(deltaTime, randomNumber(seed), isGame);
+            // backGround.update(deltaTime, isGame);
+            // ground.update(deltaTime, isGame);
 
             backGround.Draw(window);
             green.Draw(window);
