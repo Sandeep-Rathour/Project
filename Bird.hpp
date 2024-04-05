@@ -39,7 +39,7 @@ void Bird::update(float deltaTime , bool isGame)
         velocity.y = 40;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isGame)
+    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)) && isGame )
     {
         velocity.y = -sqrt(2.0f * gravity * jumpHeight );
     }

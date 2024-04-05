@@ -13,6 +13,7 @@
 enum class GameState
 {
     Menu,
+    Ready,
     Game,
     Pause,
 };
@@ -128,7 +129,7 @@ int main()
         {
         case GameState::Menu:
             
-            if(button.isMouseOver(window))
+            if(button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 gameState = GameState::Game;
             }
