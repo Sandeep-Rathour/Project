@@ -19,7 +19,8 @@ private:
 Play::Play(sf::Texture & texture)
 {   
     play.setTexture(texture);
-    play.setPosition(sf::Vector2f( 114, 260));
+    play.setPosition(sf::Vector2f( 144, 350));
+    play.setOrigin( texture.getSize().x / 2, texture.getSize().y / 2 );
     
     position.x = play.getLocalBounds().width;
     position.y = play.getLocalBounds().height;

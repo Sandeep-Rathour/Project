@@ -7,17 +7,18 @@ class Pipes
 
 public:
     Pipes(sf::Texture &texture, float speed);
-    void update(float deltaTime, int randomPosition, bool isGame);
+    void update(float deltaTime, int randomPosition);
     void Draw(sf::RenderWindow &window);
+    void reset();
 
 public:
     int currentScore;
     int highScore;
 
-private:
     sf::Sprite upperPipe, lowerPipe;
     sf::Sprite upperPipe2, lowerPipe2;
 
+private:
     int randomY2;
     int randomY;
     sf::Texture pipe;
@@ -50,16 +51,15 @@ Pipes::Pipes(sf::Texture &texture, float speed)
 
     movement.x = speed;
 
-    lowerPipe2.setPosition(1000, randomY + pipeDifference);
     upperPipe2.setPosition(1000, randomY);
+    lowerPipe2.setPosition(1000, randomY + pipeDifference);
     // height of pipe is 320 and width is 52
 }
 
-void Pipes::update(float deltaTime, int rd, bool isGame)
+void Pipes::update(float deltaTime, int rd)
 {
 
-    if (isGame)
-    {
+    
         if (upperPipe.getPosition().x < -52)
         {
             randomY = -abs(rd);
@@ -82,7 +82,7 @@ void Pipes::update(float deltaTime, int rd, bool isGame)
 
         upperPipe2.move(mv, 0);
         lowerPipe2.move(mv, 0);
-    }
+    
 }
 
 void Pipes::Draw(sf::RenderWindow &window)
@@ -92,4 +92,13 @@ void Pipes::Draw(sf::RenderWindow &window)
 
     window.draw(upperPipe2);
     window.draw(lowerPipe2);
+}
+
+void Pipes::reset()
+{
+    upperPipe.setPosition(800, randomY);
+    lowerPipe.setPosition(800, randomY + pipeDifference);
+
+    upperPipe2.setPosition(1000, randomY);
+    lowerPipe2.setPosition(1000, randomY + pipeDifference);
 }

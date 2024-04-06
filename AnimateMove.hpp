@@ -8,9 +8,9 @@ public:
     void Draw(sf::RenderWindow &window);
     bool state;
 
+    sf::RectangleShape first, second;
 private:
     float time;
-    sf::RectangleShape first, second;
     sf::Vector2f movement;
     sf::Vector2f size;
     float height;
