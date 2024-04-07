@@ -6,7 +6,6 @@
 #include "Bird.hpp"        //For our Flappy
 #include "Pipes.hpp"       //Pipes Rendered and Moved
 #include "Play.hpp"        //For Play Button
-// #include "Collision.hpp"  //For Checking Collision
 
 /// Using enum class named GameState
 /// To change States of game based on Gameplay
@@ -24,17 +23,17 @@ enum class GameState
 int main()
 {
 
-/// Built in SFML library, RenderWindow to create a new Window
-///
+    /// Built in SFML library, RenderWindow to create a new Window
+    ///
     sf::RenderWindow window(sf::VideoMode(288, 512), "Testing Number System", sf::Style::Close);
 
-/// using Random Fuction for Pipes
-///
+    /// using Random Fuction for Pipes
+    ///
     std::random_device seed;
     std::uniform_int_distribution<int> randomNumber(-120, -40);
 
-/// All Textures are Created Here
-///
+    /// All Textures are Created Here
+    ///
     sf::Texture gameMsg;
     gameMsg.loadFromFile("Sprites/Ready.png");
 
@@ -56,18 +55,20 @@ int main()
     sf::Texture playButton;
     playButton.loadFromFile("Sprites/Play.png");
 
-/// Variables for Game
-///
+    /// Variables for Game
+    ///
+    int currentScore;
+
     int PipeGroundSpeed = -120;
     // bool isGame = true;
     sf::Sprite Digits;
-    Digits.setPosition(sf::Vector2f(144, 20));
+    Digits.setPosition(sf::Vector2f(118, 20));
 
     sf::Sprite getReady(gameMsg);
     sf::Sprite gameOver(gameMsg);
 
-    getReady.setTextureRect(sf::IntRect( 0, 0, 192, 50));
-    gameOver.setTextureRect(sf::IntRect( 192, 0, 192, 50));
+    getReady.setTextureRect(sf::IntRect(0, 0, 192, 50));
+    gameOver.setTextureRect(sf::IntRect(192, 0, 192, 50));
 
     getReady.setPosition(sf::Vector2f(48.5, 100));
     gameOver.setPosition(sf::Vector2f(48.5, 100));
@@ -77,15 +78,14 @@ int main()
     tap.setPosition(sf::Vector2f((288 - tap.getGlobalBounds().width), 300));
     tap.setOrigin(tap.getGlobalBounds().width / 2, tap.getGlobalBounds().height / 2);
 
-
-/// Most Constructor's are called here
-///
+    /// Most Constructor's are called here
+    ///
 
     Play button(playButton);
     Score num; // Score class take score in update Function
 
     AnimateMove ground(bottom, 456, PipeGroundSpeed); // Ground
-    AnimateMove backGround(daySky, 256, -60);           // Background
+    AnimateMove backGround(daySky, 256, -60);         // Background
 
     Pipes green(greenPipe, PipeGroundSpeed); // Pipes (both upper and lower)
     Bird flappy(flappyTexture, 27);          // Flappy Bird
@@ -112,8 +112,6 @@ int main()
             deltaTime = 1.0f / 20.0f;
         }
 
-        
-
         /// Using evnt to Close window and Minimize it
         sf::Event evnt;
         while (window.pollEvent(evnt))
@@ -129,43 +127,37 @@ int main()
                 {
                     gameState = GameState::Ready;
                 }
-                else if(((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Right)) && gameState == GameState::Ready)
+                else if (((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Right)) && gameState == GameState::Ready)
                 {
                     gameState = GameState::Game;
                 }
-                else if(evnt.key.code == sf::Keyboard::Escape && gameState == GameState::Game )
+                else if (evnt.key.code == sf::Keyboard::Escape && gameState == GameState::Game)
                 {
                     gameState = GameState::Pause;
                 }
-                else if ((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Left)  && gameState == GameState::Pause )
+                else if ((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Left) && gameState == GameState::Pause)
                 {
                     gameState = GameState::Game;
                 }
             }
         }
 
-/// Clear Function Clear's the RenderWindow
-/// if not Cleared it will not Work Prperly
-///
+        /// Clear Function Clear's the RenderWindow
+        /// if not Cleared it will not Work Prperly
+        ///
         window.clear(sf::Color::White);
-
-
-
 
         switch (gameState)
         {
         case GameState::Menu:
-            
-            // isGame = true;
 
-            if(button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            if (button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 green.reset();
                 gameState = GameState::Ready;
             }
 
             flappy.reset();
-            
 
             backGround.Draw(window);
             green.Draw(window);
@@ -175,11 +167,11 @@ int main()
             window.draw(button.play);
 
             break;
-        
+
         case GameState::Ready:
 
             flappy.reset();
-
+            currentScore = 0;
             backGround.Draw(window);
             green.Draw(window);
             ground.Draw(window);
@@ -190,45 +182,44 @@ int main()
             // window.draw(button.play);
 
             break;
-        
-        case GameState::Game:           
 
-            // num.update(ft);
-            // Digits.setTexture(num.currentScore);
-           
-
-
-            // std::cout<< "Intersection: " << hit.intersectX << " "<< intersectY << std::endl;
+        case GameState::Game:
 
             flappy.update(deltaTime);
             green.update(deltaTime, randomNumber(seed));
             backGround.update(deltaTime);
             ground.update(deltaTime);
 
-            if(flappy.checkCollision(green.upperPipe) || flappy.checkCollision(green.lowerPipe))
+            if (flappy.checkCollision(green.collide) || flappy.checkCollision(green.collide2))
+            {
+                currentScore += 1;
+            }
+            if (flappy.checkCollision(green.upperPipe) || flappy.checkCollision(green.lowerPipe))
             {
                 gameState = GameState::GameOver;
             }
-            else if(flappy.checkCollision(green.lowerPipe2) || flappy.checkCollision(green.upperPipe2))
+            else if (flappy.checkCollision(green.lowerPipe2) || flappy.checkCollision(green.upperPipe2))
             {
                 gameState = GameState::GameOver;
             }
-            else if(flappy.checkCollision(ground.first) || flappy.checkCollision(ground.second))
+            else if (flappy.checkCollision(ground.first) || flappy.checkCollision(ground.second))
             {
                 gameState = GameState::GameOver;
             }
 
-
-            backGround.Draw(window);  //1
-            green.Draw(window);       //2
-            ground.Draw(window);      //3
-            window.draw(flappy.bird); //4
+            num.update(currentScore);
+            Digits.setTexture(num.currentScore);
+            backGround.Draw(window); // 1
+            green.Draw(window);      // 2
+            window.draw(green.collide);
+            window.draw(green.collide2);
+            ground.Draw(window);      // 3
+            window.draw(flappy.bird); // 4
+            window.draw(Digits);
 
             break;
 
         case GameState::Pause:
-
-            
 
             // flappy.update(deltaTime, isGame);
             // green.update(deltaTime, randomNumber(seed), isGame);
@@ -237,6 +228,8 @@ int main()
 
             backGround.Draw(window);
             green.Draw(window);
+            window.draw(green.collide);
+            window.draw(green.collide2);
             ground.Draw(window);
             window.draw(flappy.bird);
 
@@ -244,20 +237,21 @@ int main()
 
         case GameState::GameOver:
 
-
-            if(button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            if (button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 green.reset();
                 gameState = GameState::Ready;
             }
 
-
             backGround.Draw(window);
             green.Draw(window);
+            window.draw(green.collide);
+            window.draw(green.collide2);
             ground.Draw(window);
             window.draw(flappy.bird);
             window.draw(button.play);
             window.draw(gameOver);
+            window.draw(Digits);
 
             break;
         }
