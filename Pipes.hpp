@@ -33,15 +33,15 @@ Pipes::Pipes(sf::Texture &texture, float speed)
     pipe = texture;
     randomY = -100;
 
-    collide.setSize(sf::Vector2f( 16 , pipeDistance));
-    collide.setFillColor(sf::Color::Red);
-    collide.setPosition( 800,  randomY + 160);
-    collide.setOrigin( 8, pipeDistance / 2);
+    collide.setSize(sf::Vector2f( 16 , 110));
+    collide.setFillColor(sf::Color::Transparent);
+    // collide.setPosition( 800,  randomY + 160);
+    collide.setOrigin( 8, 55);
 
-    collide2.setSize(sf::Vector2f( 16 , pipeDistance));
-    collide2.setFillColor(sf::Color::Red);
-    collide2.setPosition( 1000,  randomY + 160);
-    collide2.setOrigin( 8, pipeDistance / 2);
+    collide2.setSize(sf::Vector2f( 16 , 110));
+    collide2.setFillColor(sf::Color::Transparent);
+    // collide2.setPosition( 1000,  randomY + 160);
+    collide2.setOrigin( 8, 55);
 
     upperPipe.setTexture(pipe);
     upperPipe.setPosition(800, randomY);
@@ -51,7 +51,7 @@ Pipes::Pipes(sf::Texture &texture, float speed)
     lowerPipe.setTextureRect(sf::IntRect(52, 0, -52, 320));
     lowerPipe.setOrigin( 26, 160);
     lowerPipe.setRotation(180);
-    lowerPipe.setPosition(800, randomY + pipeDifference);
+    lowerPipe.setPosition(600, randomY + pipeDifference);
 
     upperPipe2.setPosition(1000, randomY);
     upperPipe2.setTexture(pipe);
@@ -61,7 +61,7 @@ Pipes::Pipes(sf::Texture &texture, float speed)
     lowerPipe2.setTextureRect(sf::IntRect(52, 0, -52, 320));
     lowerPipe2.setOrigin( 26, 160);
     lowerPipe2.setRotation(180);
-    lowerPipe2.setPosition(1000, randomY + pipeDifference);
+    lowerPipe2.setPosition(800, randomY + pipeDifference);
 
     movement.x = speed;
 
@@ -70,12 +70,15 @@ Pipes::Pipes(sf::Texture &texture, float speed)
 
 void Pipes::update(float deltaTime, int rd)
 {
-    collide.setPosition(upperPipe.getPosition().x + 26, upperPipe.getPosition().y + 160);
-    collide2.setPosition(upperPipe2.getPosition().x + 26, upperPipe2.getPosition().y + 160);
+    collide.setPosition(upperPipe.getPosition().x + 26, upperPipe.getPosition().y + 215);
+    collide2.setPosition(upperPipe2.getPosition().x + 26, upperPipe2.getPosition().y + 215);
+
+    // std::cout<< "Position: " << upperPipe.getPosition().x << " "<< upperPipe.getPosition().y << std::endl;
+
     
     if (upperPipe.getPosition().x < -52)
     {
-        randomY = -abs(rd);
+        randomY = (rd);
         upperPipe.setPosition(upperPipe2.getPosition().x + pipeDistance, randomY);
         lowerPipe.setPosition(upperPipe2.getPosition().x + pipeDistance, randomY + pipeDifference);
     }

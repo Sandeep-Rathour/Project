@@ -1,25 +1,30 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
+#include "Animation.hpp"
 
 class Bird
 {
 
 public:
-    Bird(sf::Texture &texture, float jumpHeight);
+    Bird(sf::Texture *texture, float jumpHeight);
     void update(float deltaTime);
     void reset();
     bool checkCollision(const sf::RectangleShape & otherBody);
     bool checkCollision(const sf::Sprite & otherSprite);
+    void updateAnimation(float deltaTime);
+
 
 public:
     sf::Sprite bird;
 
 private:
+    Animate wings;
     sf::RectangleShape otherBody;
     sf::Sprite otherSprite;
     sf::Vector2f velocity;
     float jumpHeight;
     float gravity;
+
 
 
     ///Variable for Collision checking
@@ -31,26 +36,35 @@ private:
 
 void Bird::reset()
 {
-    bird.setPosition(sf::Vector2f(55, 180));
+    bird.setPosition(sf::Vector2f(70, 180));
     velocity.y = 0;
 }
 
-Bird::Bird(sf::Texture &texture, float jumpHeight)
+Bird::Bird(sf::Texture *texture, float jumpHeight)
+:   wings(texture, sf::Vector2u(1, 4), 0.12)
 {
     gravity = 981.0f;
     velocity.y = 0;
     
     this->jumpHeight = jumpHeight;
     
-    bird.setTexture(texture);
-    bird.setPosition(sf::Vector2f(55, 180));
-    bird.setOrigin( texture.getSize().x / 2, (texture.getSize().y / 4) / 2 );
-    bird.setTextureRect(sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y / 4));
+    bird.setPosition(sf::Vector2f(70, 180));
+    bird.setTexture(*texture);
+    bird.setOrigin( texture -> getSize().x / 2, (texture -> getSize().y / 4) / 2 );
+    bird.setTextureRect(sf::IntRect(0, 0, texture -> getSize().x, texture -> getSize().y / 4)); 
+
     
+}
+
+void Bird::updateAnimation(float deltaTime)
+{
+    wings.update(deltaTime);
+    bird.setTextureRect(wings.uvRect);
 }
 
 void Bird::update(float deltaTime)
 {
+
     if(velocity.y >= -30 && velocity.y <= 30)
     {
         velocity.y = 40;
@@ -69,8 +83,9 @@ void Bird::update(float deltaTime)
 
     if(bird.getPosition().y < 0)
     {
-        bird.setPosition( 55, 0);
+        bird.setPosition( 70  , 0);
     }
+   
   
 }
 
@@ -119,7 +134,6 @@ bool Bird::checkCollision(const sf::Sprite & otherSprite)
     intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
     intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-    std::cout<< "Intersect Sprite " << intersectX << " "<< intersectY << std::endl;
 
     if(intersectX < -2.0f && intersectY < -2.0f)
     {

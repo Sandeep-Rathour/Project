@@ -30,7 +30,7 @@ int main()
     /// using Random Fuction for Pipes
     ///
     std::random_device seed;
-    std::uniform_int_distribution<int> randomNumber(-120, -40);
+    std::uniform_int_distribution<int> randomNumber(-110, 110);
 
     /// All Textures are Created Here
     ///
@@ -58,6 +58,7 @@ int main()
     /// Variables for Game
     ///
     int currentScore;
+    bool isScore = true;
 
     int PipeGroundSpeed = -120;
     // bool isGame = true;
@@ -88,7 +89,7 @@ int main()
     AnimateMove backGround(daySky, 256, -60);         // Background
 
     Pipes green(greenPipe, PipeGroundSpeed); // Pipes (both upper and lower)
-    Bird flappy(flappyTexture, 27);          // Flappy Bird
+    Bird flappy(&flappyTexture, 27);          // Flappy Bird
 
     /// Using SFML Clock so that Objects will move acording to time,
     /// which will result in moving objects at same speed in all Computers
@@ -96,13 +97,10 @@ int main()
     sf::Clock clock;
     float deltaTime; // Storing clock time as Seconds in deltaTime
 
-    sf::Clock tt;
-
     GameState gameState = GameState::Menu;
 
     while (window.isOpen())
     {
-        float ft = tt.getElapsedTime().asSeconds();
         /// Time from last reset is Stored and then Clock is restarted
         deltaTime = clock.restart().asSeconds();
 
@@ -130,6 +128,10 @@ int main()
                 else if (((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Right)) && gameState == GameState::Ready)
                 {
                     gameState = GameState::Game;
+                }
+                else if (evnt.key.code == sf::Keyboard::Escape && gameState == GameState::Ready)
+                {
+                    gameState = GameState::Menu;
                 }
                 else if (evnt.key.code == sf::Keyboard::Escape && gameState == GameState::Game)
                 {
@@ -159,6 +161,9 @@ int main()
 
             flappy.reset();
 
+
+            // flappy.updateAnimation(deltaTime);
+
             backGround.Draw(window);
             green.Draw(window);
             ground.Draw(window);
@@ -169,6 +174,9 @@ int main()
             break;
 
         case GameState::Ready:
+
+
+            
 
             flappy.reset();
             currentScore = 0;
@@ -185,14 +193,21 @@ int main()
 
         case GameState::Game:
 
+            // flappy.bird.setTextureRect(flappy.wings.uvRect);
+            flappy.updateAnimation(deltaTime);
             flappy.update(deltaTime);
             green.update(deltaTime, randomNumber(seed));
             backGround.update(deltaTime);
             ground.update(deltaTime);
 
-            if (flappy.checkCollision(green.collide) || flappy.checkCollision(green.collide2))
+            if ((flappy.checkCollision(green.collide) || flappy.checkCollision(green.collide2)) && isScore)
             {
                 currentScore += 1;
+                isScore = false;
+            }
+            else if (!isScore && !flappy.checkCollision(green.collide) & !flappy.checkCollision(green.collide2))
+            {
+                isScore = true;
             }
             if (flappy.checkCollision(green.upperPipe) || flappy.checkCollision(green.lowerPipe))
             {
@@ -255,7 +270,6 @@ int main()
 
             break;
         }
-
         // window.draw(Digits);
 
         /// Display Fuction is Used to Display Everything on RenderWindow
