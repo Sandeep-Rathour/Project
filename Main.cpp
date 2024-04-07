@@ -6,7 +6,7 @@
 #include "Bird.hpp"        //For our Flappy
 #include "Pipes.hpp"       //Pipes Rendered and Moved
 #include "Play.hpp"        //For Play Button
-#include "Collision.hpp"  //For Checking Collision
+// #include "Collision.hpp"  //For Checking Collision
 
 /// Using enum class named GameState
 /// To change States of game based on Gameplay
@@ -31,7 +31,7 @@ int main()
 /// using Random Fuction for Pipes
 ///
     std::random_device seed;
-    std::uniform_int_distribution<int> randomNumber(-280, -60);
+    std::uniform_int_distribution<int> randomNumber(-120, -40);
 
 /// All Textures are Created Here
 ///
@@ -59,7 +59,7 @@ int main()
 /// Variables for Game
 ///
     int PipeGroundSpeed = -120;
-    bool isGame = true;
+    // bool isGame = true;
     sf::Sprite Digits;
     Digits.setPosition(sf::Vector2f(144, 20));
 
@@ -80,13 +80,12 @@ int main()
 
 /// Most Constructor's are called here
 ///
-    Collision hit;
 
     Play button(playButton);
     Score num; // Score class take score in update Function
 
-    AnimateMove ground(bottom, 400, PipeGroundSpeed); // Ground
-    AnimateMove backGround(daySky, 0, -60);           // Background
+    AnimateMove ground(bottom, 456, PipeGroundSpeed); // Ground
+    AnimateMove backGround(daySky, 256, -60);           // Background
 
     Pipes green(greenPipe, PipeGroundSpeed); // Pipes (both upper and lower)
     Bird flappy(flappyTexture, 27);          // Flappy Bird
@@ -157,7 +156,7 @@ int main()
         {
         case GameState::Menu:
             
-            isGame = true;
+            // isGame = true;
 
             if(button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
@@ -179,12 +178,13 @@ int main()
         
         case GameState::Ready:
 
-            
+            flappy.reset();
 
             backGround.Draw(window);
             green.Draw(window);
             ground.Draw(window);
             window.draw(flappy.bird);
+            window.draw(getReady);
             window.draw(tap);
             // window.draw(getReady);
             // window.draw(button.play);
@@ -196,23 +196,28 @@ int main()
             // num.update(ft);
             // Digits.setTexture(num.currentScore);
            
-            if (hit.checkCollision(flappy.bird, green.upperPipe) || hit.checkCollision(flappy.bird, green.lowerPipe))
+
+
+            // std::cout<< "Intersection: " << hit.intersectX << " "<< intersectY << std::endl;
+
+            flappy.update(deltaTime);
+            green.update(deltaTime, randomNumber(seed));
+            backGround.update(deltaTime);
+            ground.update(deltaTime);
+
+            if(flappy.checkCollision(green.upperPipe) || flappy.checkCollision(green.lowerPipe))
             {
                 gameState = GameState::GameOver;
             }
-            else if (hit.checkCollision(flappy.bird, green.upperPipe2) || hit.checkCollision(flappy.bird, green.lowerPipe2))
+            else if(flappy.checkCollision(green.lowerPipe2) || flappy.checkCollision(green.upperPipe2))
             {
                 gameState = GameState::GameOver;
             }
-            else if (hit.checkCollision(flappy.bird, ground.first) || hit.checkCollision(flappy.bird, ground.second))
+            else if(flappy.checkCollision(ground.first) || flappy.checkCollision(ground.second))
             {
                 gameState = GameState::GameOver;
             }
 
-            flappy.update(deltaTime);
-            green.update(deltaTime, randomNumber(seed));
-            backGround.update(deltaTime, isGame);
-            ground.update(deltaTime, isGame);
 
             backGround.Draw(window);  //1
             green.Draw(window);       //2

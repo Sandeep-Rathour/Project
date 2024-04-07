@@ -4,7 +4,7 @@ class AnimateMove
 {
 public:
     AnimateMove(sf::Texture &text, float height, float speed);
-    void update(float deltaTime, bool isGame);
+    void update(float deltaTime);
     void Draw(sf::RenderWindow &window);
     bool state;
 
@@ -31,8 +31,11 @@ AnimateMove::AnimateMove(sf::Texture &text, float height, float speed)
     size.x = text.getSize().x;
     size.y = text.getSize().y;
 
-    first.setSize(sf::Vector2f(size.x, size.y));
     second.setSize(sf::Vector2f(size.x, size.y));
+    first.setSize(sf::Vector2f(size.x, size.y));
+
+    second.setOrigin(second.getSize().x / 2, second.getSize().y / 2);
+    first.setOrigin(first.getSize().x / 2, first.getSize().y / 2);
 
     movement.x = speed;
     movement.y = 0;
@@ -47,25 +50,22 @@ void AnimateMove::Move()
     second.move((movement.x * time), 0);
 }
 
-void AnimateMove::update(float deltaTime , bool isGame)
+void AnimateMove::update(float deltaTime)
 { 
     time = deltaTime;
     firstX = first.getPosition().x;
     secondX = second.getPosition().x;
-    
-    if (isGame)
-    {
-        if (firstX + size.x < 0)
-        {
-            first.setPosition(secondX + size.x, height);
-        }
-        else if (secondX + size.x < 0)
-        {
-            second.setPosition(firstX + size.x, height);
-        }
 
-        Move();
+    if (firstX + size.x < 144)
+    {
+        first.setPosition(secondX + size.x, height);
     }
+    else if (secondX + size.x < 144)
+    {
+        second.setPosition(firstX + size.x, height);
+    }
+
+    Move();
 }
 
 void AnimateMove::Draw(sf::RenderWindow &window)

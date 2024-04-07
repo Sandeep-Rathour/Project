@@ -33,26 +33,29 @@ Pipes::Pipes(sf::Texture &texture, float speed)
     randomY = -100;
 
     upperPipe.setTexture(pipe);
+    upperPipe.setPosition(800, randomY);
+    upperPipe.setOrigin( 26, 160);
+
+
     lowerPipe.setTexture(texture);
     lowerPipe.setTextureRect(sf::IntRect(52, 0, -52, 320));
-
-    lowerPipe.setOrigin(52, 320);
+    lowerPipe.setOrigin( 26, 160);
     lowerPipe.setRotation(180);
-
-    upperPipe.setPosition(800, randomY);
     lowerPipe.setPosition(800, randomY + pipeDifference);
 
+    upperPipe2.setPosition(1000, randomY);
     upperPipe2.setTexture(pipe);
+    upperPipe2.setOrigin( 26, 160);
+
+
     lowerPipe2.setTexture(texture);
     lowerPipe2.setTextureRect(sf::IntRect(52, 0, -52, 320));
-
-    lowerPipe2.setOrigin(52, 320);
+    lowerPipe2.setOrigin( 26, 160);
     lowerPipe2.setRotation(180);
+    lowerPipe2.setPosition(1000, randomY + pipeDifference);
 
     movement.x = speed;
 
-    upperPipe2.setPosition(1000, randomY);
-    lowerPipe2.setPosition(1000, randomY + pipeDifference);
     // height of pipe is 320 and width is 52
 }
 
