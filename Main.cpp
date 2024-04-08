@@ -47,7 +47,7 @@ int main()
     flappyTexture.loadFromFile("Sprites/BlueBird.png");
 
     sf::Texture daySky; // Texture of Day Sky Background
-    daySky.loadFromFile("Sprites/NightSky.png");
+    daySky.loadFromFile("Sprites/DaySky.png");
 
     sf::Texture bottom; // Texture of Ground
     bottom.loadFromFile("Sprites/Ground.png");
@@ -125,7 +125,7 @@ int main()
                 {
                     gameState = GameState::Ready;
                 }
-                else if (((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Right)) && gameState == GameState::Ready)
+                else if (((evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Left)) && gameState == GameState::Ready)
                 {
                     gameState = GameState::Game;
                 }
@@ -153,10 +153,17 @@ int main()
         {
         case GameState::Menu:
 
-            if (button.isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            button.reset();
+
+            if (button.isMouseOver(window) && evnt.type == sf::Event::MouseButtonPressed && evnt.mouseButton.button == sf::Mouse::Left)
+            {
+                button.play.move( 0, 5);
+            }
+            if (button.isMouseOver(window) && evnt.type == sf::Event::MouseButtonReleased && evnt.mouseButton.button == sf::Mouse::Left)
             {
                 green.reset();
                 gameState = GameState::Ready;
+                
             }
 
             flappy.reset();
@@ -246,6 +253,7 @@ int main()
             window.draw(green.collide);
             window.draw(green.collide2);
             ground.Draw(window);
+            window.draw(tap);
             window.draw(flappy.bird);
 
             break;

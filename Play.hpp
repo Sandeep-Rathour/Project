@@ -8,6 +8,7 @@ public:
     Play(sf::Texture & texture);
     // void update();
     bool isMouseOver(sf::RenderWindow & window);
+    void reset();
 
     sf::Sprite play;
 
@@ -30,4 +31,9 @@ bool Play::isMouseOver(sf::RenderWindow & window)
 {
     sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     return play.getGlobalBounds().contains(mouse);
+}
+
+void Play::reset()
+{
+    play.setPosition(144, 350);
 }
